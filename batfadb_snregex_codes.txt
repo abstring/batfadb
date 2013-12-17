@@ -1,0 +1,27 @@
+Zoll Surepower II
+
+AJ = SurepowerII battery
+## = year code
+A  = month code (A=Jan, B=Feb)
+A  = vendor code
+A  = cell manf code
+#### = sequential number
+
+regex format:
+^AJ(\d{2})([A-Z]{3})(\d{4})		//battery pack
+^TF00([A-Z]{3})					//PCB
+
+example valid serial number:
+AJ13BAS1234
+
+
+$regex[1] = "/AJ/";
+$regex[2] = "/AK/";
+$sn  = "AK2312135401";
+
+for ($i = 1; $i <= 2; $i++) {
+    if (preg_match($regex[$i], $sn)) {
+      echo "This is type ".$i;
+    }
+}
+
