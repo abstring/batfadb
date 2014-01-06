@@ -21,6 +21,11 @@ require_once("models/usercake_frameset_header.php");
 		<td><b><font color="orange">In development</font></b></td>
 	</tr>
 	<tr>
+		<td><a href="batdesigner.php">Battery Pack Design Tool</a></td>
+		<td>Utility to analytically down-select cell types to suggest optimal pack construction</td>
+		<td><b><font color="orange">In development</font></b></td>
+	</tr>
+	<tr>
 		<td><a href="pm.php">Project Management</a></td>
 		<td>Database of project information and associated tasks, deliverables, etc.</td>
 		<td><b><font color="orange">In development</font></b></td>

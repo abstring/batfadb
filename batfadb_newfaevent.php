@@ -102,9 +102,40 @@ if(isset($_POST['faeventready']) && isset($_POST['batid'])){
 
 	$result = mysqli_query($mysqli,"INSERT INTO batfa_faevents (batfa_batteries_id, date_created, symptom, symptom_date) VALUES ('".$batid."','".$date_created."','".$symptom."','".$symptom_date."')");
 
-	echo "Failure event added.<br>";
+	echo "<font color='green'><b>Failure event added.</b></font><br>";
 
 	echo "<hr><p align='center'><a href='batfadb.php'>Enter another serial number</a></p>";
+}
+
+//Insert a new battery record AND a new FA event record if we don't have a database match.
+if(isset($_POST['faeventready']) && !isset($_POST['batid'])){
+
+	$batmake  = $_POST['batmake'];
+	$batmodel = $_POST['batmodel'];
+	$batsn    = $_POST['batsn'];
+	$pcbsn	  = $_POST['pcbsn'];
+
+	if($result = mysqli_query($mysqli,"INSERT INTO batfa_batteries (sn, make, model, pcbsn) VALUES ('".$batsn."','".$batmake."','".$batmodel."','".$pcbsn."')")){
+		$batid = $mysqli->insert_id;
+		echo "<font color='green'><b>Added new battery.</b><br></font>";
+	}
+	else{echo "<font color='red'><b>ERROR</b>: Could not create a new battery record in the database!</font>";
+	}
+
+	$date_created	  = $_POST['date_created'];
+	$symptom  = $_POST['symptom'];
+	$symptom_date  = date('Y-m-d',strtotime($_POST['symptom_date'])); //store date as Y-m-d for SQL use.
+	$date_created  = date('Y-m-d'); //store date as Y-m-d for SQL use.
+	echo "Battery: <b>".$batmake." ".$batmodel."</b> Pack SN: <b>".$batsn."</b> PCB SN: <b>".$pcbsn."</b><br>";
+	echo "Symptom: <b>".$symptom."</b><br>";
+	echo "Symptom Date: <b>".$symptom_date."</b><br>";
+
+	$result = mysqli_query($mysqli,"INSERT INTO batfa_faevents (batfa_batteries_id, date_created, symptom, symptom_date) VALUES ('".$batid."','".$date_created."','".$symptom."','".$symptom_date."')");
+
+	echo "<font color='green'><b>Added a new failure event for this battery.</b></font><br>";
+
+	echo "<hr><p align='center'><a href='batfadb.php'>Enter another serial number</a></p>";
+
 }
 
 ?>
