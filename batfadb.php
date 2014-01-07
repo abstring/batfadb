@@ -5,8 +5,8 @@ require_once("models/header.php");
 require_once("models/db-settings.php"); //Require DB connection
 include("models/usercake_frameset_header.php");
 ?>
-
-<h2>Battery Failure Analysis Database</h2>
+<div align='center'><img src="img/fixicon.jpg" height="55" width="55"></div>
+<h1>Battery Failure Analysis Database</h1>
 
 
 <?php

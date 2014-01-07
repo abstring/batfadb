@@ -7,37 +7,30 @@ require_once("models/usercake_frameset_header.php");
 
 <h1>Application Menu</h1>
 <p></p>
-<table border=1 cellpadding="2" align="center">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-			<th>Status</th>
-		</tr>
-	</thead>
+<table align="center">
 	<tr>
-		<td style="width:175px; vertical-align:text-top"><a href="docnums.php">Document Number Index</a></td>
-		<td>Index of document numbers for ECOs, parts, assemblies, and written documents for the Aved Engineering Department</td>
+		<td><a href="docnums.php"><img src="img/docicon.png" height="55" width="55"></a></td>
+		<td><a href="docnums.php"><h2>Document Number Index</h2></a></td>
 		<td style="width:120px"><b><font color="orange">In development</font></b></td>
 	</tr>
 	<tr>
-		<td style="width:175px; vertical-align:text-top"><a href="batfadb.php">Battery Failure Analysis</a></td>
-		<td>Database of failure events and their status</td>
+		<td><a href="batfadb.php"><img src="img/fixicon.jpg" height="55" width="55"></a></td>
+		<td><a href="batfadb.php"><h2>Battery Failure Analysis</h2></a></td>
 		<td><b><font color="orange">In development</font></b></td>
 	</tr>
 	<tr>
-		<td style="width:175px; vertical-align:text-top"><a href="batdesigner.php">Battery Pack Design Tool</a></td>
-		<td>Utility to analytically down-select cell types to suggest optimal pack construction</td>
+		<td><a href="batdesigner.php"><img src="img/compass.png" height="55" width="55"></a></td>
+		<td><a href="batdesigner.php"><h2>Battery Pack Design Tool</h2></a></td>
 		<td><b><font color="orange">In development</font></b></td>
 	</tr>
 	<tr>
-		<td style="width:175px; vertical-align:text-top"><a href="pm.php">Project Management</a></td>
-		<td>Database of project information and associated tasks, deliverables, etc.</td>
+		<td><a href="pm.php"><img src="img/gantt.png" height="55" width="55"></a></td>
+		<td><a href="pm.php"><h2>Project Management</h2></a></td>
 		<td><b><font color="orange">In development</font></b></td>
 	</tr>
 	<tr>
-		<td style="width:175px; vertical-align:text-top"><a href="purchasereqs.php">Purchase Requests</a></td>
-		<td>List of purchase requests and their current status</td>
+		<td><a href="purchasereqs.php"><img src="img/cart.png" height="55" width="55"></a></td>
+		<td><a href="purchasereqs.php"><h2>Purchase Requests</h2></a></td>
 		<td><b><font color="orange">In development</font></b></td>
 	</tr>
 </table>
