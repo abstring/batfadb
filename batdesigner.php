@@ -7,6 +7,11 @@ require_once("models/usercake_frameset_header.php");
 
 <h1>Battery Pack Design Tool</h1>
 <p></p>
-Under construction...
+Under construction...<br>
+<img src='batdes_packvisualizer.php'>
+<?php
+
+
+?>
 
 <?php include("models/usercake_frameset_footer.php"); ?>
