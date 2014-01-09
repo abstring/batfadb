@@ -5,12 +5,16 @@ header("Content-type: image/png");
 //inputs: designid
 
 //Get design information and cell size information
-$result = mysqli_query($mysqli,"SELECT * FROM batdes_designs WHERE id='".$_GET['id']."'");
+//Switched off for now...
+if(0){
 	$design = mysqli_fetch_array($result); 	//Store the result in a var.
 
 
-	if (isset($batrecord)){
-		$batmake  = $batrecord['make'];
+	if (isset($design)){
+		$cellid  	= $design['cellid'];
+		$numpar  	= $design['cellid'];
+	}
+}
 
 $width = 300;
 $height = 300;
