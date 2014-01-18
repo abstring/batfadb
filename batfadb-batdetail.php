@@ -17,37 +17,71 @@ include("models/usercake_frameset_header.php");
 // }
 
 //Check the database to see if it exists as a battery sn
-$result = mysqli_query($mysqli,"SELECT batfa_faevents.*, batfa_batteries.* FROM batfa_faevents LEFT JOIN batfa_batteries ON batfa_faevents.batfa_batteries_id = batfa_batteries.id WHERE batfa_faevents.diagnosed IS NULL ORDER BY batfa_faevents.date_created DESC LIMIT 0, 30 ");
-while ($row = mysqli_fetch_array($result)){
-			$batfaevents[] = $row;	//Array of event arrays
+if(!isset($_GET['batid'])){
+	echo "No battery selected.<br>";
 }
 
-echo "<h3>Failure Event History for [bat make model sn]</h3>";
+if(isset($_GET['batid'])){
+	$batid = $_GET['batid'];
 
-if (isset($batfaevents)){
-		echo "<table border=1>
-				<tr>
-					<th>Date Submitted</th>
-					<th>Symptom Date</th>
-					<th>Battery</th>
-					<th>Symptom</th>
-					";
-		foreach ($batfaevents as $event){
-				echo "
+
+	$result = mysqli_query($mysqli,"SELECT batfa_faevents.*, batfa_batteries.* FROM batfa_faevents LEFT JOIN batfa_batteries ON batfa_faevents.batfa_batteries_id = batfa_batteries.id WHERE batfa_batteries.id = ".$batid." ORDER BY batfa_faevents.symptom_date ASC LIMIT 0, 30 ");
+	while ($row = mysqli_fetch_array($result)){
+				$batfaevents[] = $row;	//Array of event arrays
+	}
+
+	// $result1 = mysqli_query($mysqli,"SELECT batfa_faevents.*, batfa_batteries.* FROM batfa_faevents LEFT JOIN batfa_batteries ON batfa_faevents.batfa_batteries_id = batfa_batteries.id WHERE batfa_batteries.id = ".$batid." AND batfa_faevents.diagnosed IS NULL ORDER BY batfa_faevents.symptom_date ASC LIMIT 0, 30 ");
+	// while ($row = mysqli_fetch_array($result1)){
+	// 			$batfaevents_open[] = $row;	//Array of event arrays
+	// }
+
+	// $result2 = mysqli_query($mysqli,"SELECT batfa_faevents.*, batfa_batteries.* FROM batfa_faevents LEFT JOIN batfa_batteries ON batfa_faevents.batfa_batteries_id = batfa_batteries.id WHERE batfa_batteries.id = ".$batid." AND batfa_faevents.diagnosed IS NOT NULL ORDER BY batfa_faevents.symptom_date ASC LIMIT 0, 30 ");
+	// while ($row = mysqli_fetch_array($result2)){
+	// 			$batfaevents_closed[] = $row;	//Array of event arrays
+	// }
+
+	echo "<font size=3>".$batfaevents[0]['make']." ".$batfaevents[0]['model']."<br>
+		Serial #: <b>".$batfaevents[0]['sn']."</b><br>
+		PCB Serial #: <b>".$batfaevents[0]['pcbsn']."</b></font>
+		<hr>";
+
+	if (isset($batfaevents)){
+			echo "<br><table>
 					<tr>
-						<td align='center'>".date('m/d/Y',strtotime($event['date_created']))."</td>
-						<td align='center'>".date('m/d/Y',strtotime($event['symptom_date']))."</td>
-						<td><b>".$event['make']." ".$event['model']."</b><br>SN: ".$event['sn']."<br>PCB: ".$event['pcbsn']."
-						<td>".$event['symptom']."</td>
-						<td>[BUTTON]</td>
-					</tr>";
-		}
-		echo "</table>";
-	}
-	else {
-		echo "No failure events open!<br>";
-	}
+						<th>Date Submitted</th>
+						<th>Status</th>
+						<th>Symptom</th>
+						<th>Diagnosis</th>
+						<th>Engineer</th>
+						<th>Diagnosis Date</th>
+						";
+			foreach ($batfaevents as $event){
+			echo "
+				<tr>
+					<td align='center'>".date('m/d/Y',strtotime($event['symptom_date']))."<br>
+						<font size=1 color='grey'>Entered ".date('m/d/Y',strtotime($event['date_created']))."</font></td>
+					<td align='center'>";
 
+					if($event['diagnosed']==1){
+						echo "<font color='green'>CLOSED</font>";
+					}
+					else{
+						echo "<b><font color='red'>OPEN</font></b>";
+					}
+
+					echo "</td>
+					<td>".$event['symptom']."</td>
+					<td>".$event['diagnosis']."</td>
+					<td align='center'>".$event['diagnosis_user']."</td>
+					<td align='center'>".$event['diagnosis_date']."</td>
+				</tr>";
+		}
+			echo "</table>";
+		}
+		else {
+			echo "No failure events open!<br>";
+		}
+}
 echo "<hr>
 <p align='center'><a href='batfadb.php'>Enter a new FA event</a></p>";
 

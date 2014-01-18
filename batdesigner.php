@@ -7,7 +7,7 @@ require_once("models/usercake_frameset_header.php");
 
 <h1>Battery Pack Design Tool</h1>
 <!-- <img src='batdes_packvisualizer.php'> -->
-<style>
+<!-- <style>
 #spectable
 {
 border-collapse:collapse;
@@ -31,9 +31,9 @@ color:#ffffff;
 color:#000000;
 background-color:#EAF2D3;
 }
-</style>
+</style> -->
 <h3>Electrical Specifications</h3>
-<table id="spectable" border="0">
+<table>
   <tbody>
     <tr>
       <td width="200px"><br>
@@ -152,7 +152,7 @@ background-color:#EAF2D3;
   </tbody>
 </table>
 <h3>Mechanical Specifications</h3>
-<table id="spectable" border="0">
+<table>
   <tbody>
     <tr>
       <td width="200px"><br>
@@ -226,7 +226,7 @@ background-color:#EAF2D3;
   </tbody>
 </table>
 <h2>Design Criteria</h2>
-<table id="spectable" style="width: 100%" border="0">
+<table style="width: 100%">
   <tbody>
     <tr>
       <td style="text-align: center;" colspan="3" rowspan="2"><span style="font-weight: bold;">Optimizations</span></td>

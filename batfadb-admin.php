@@ -11,31 +11,35 @@ include("models/usercake_frameset_header.php");
 
 
 <?php
+echo "<p align='center'><a href='batfadb.php'>Enter a new failure event</a></p>";
 echo "<h3>Open FA Events</h3>";
 
-//Check the database to see if it exists as a battery sn
-$result = mysqli_query($mysqli,"SELECT batfa_faevents.*, batfa_batteries.* FROM batfa_faevents LEFT JOIN batfa_batteries ON batfa_faevents.batfa_batteries_id = batfa_batteries.id WHERE batfa_faevents.diagnosed IS NULL ORDER BY batfa_faevents.date_created DESC LIMIT 0, 30 ");
+//Query the database for all OPEN events.
+$result = mysqli_query($mysqli,"SELECT batfa_faevents.*, batfa_batteries.* FROM batfa_faevents LEFT JOIN batfa_batteries ON batfa_faevents.batfa_batteries_id = batfa_batteries.id WHERE batfa_faevents.diagnosed IS NULL ORDER BY batfa_faevents.date_created ASC LIMIT 0, 30 ");
 while ($row = mysqli_fetch_array($result)){
 			$batfaevents[] = $row;	//Array of event arrays
 }
 
 if (isset($batfaevents)){
-		echo "<table border=1>
+		echo "<table>
 				<tr>
-					<th>Date Submitted</th>
 					<th>Symptom Date</th>
 					<th>Battery</th>
 					<th>Symptom</th>
+					<th></th>
+				</tr>
 					";
 		foreach ($batfaevents as $event){
-				echo "
-					<tr>
-						<td align='center'>".date('m/d/Y',strtotime($event['date_created']))."</td>
-						<td align='center'>".date('m/d/Y',strtotime($event['symptom_date']))."</td>
-						<td><b>".$event['make']." ".$event['model']."</b><br>SN: <a href='batfadb-batdetail.php?batid=".$event['id'].">".$event['sn']."</a><br>PCB: ".$event['pcbsn']."</td>
-						<td>".$event['symptom']."</td>
-						<td>[BUTTON]</td>
-					</tr>";
+			echo "
+				<tr>
+					<td align='center'>".date('m/d/Y',strtotime($event['symptom_date']))."<br>
+						<font size=1 color='grey'>Entered ".date('m/d/Y',strtotime($event['date_created']))."</font></td>
+					<td><b>".$event['make']." ".$event['model']."</b><br>
+						SN: <a href='batfadb-batdetail.php?batfa_batteries_id=".$event['id']."'>".$event['sn']."</a><br>
+						PCB: ".$event['pcbsn']."</td>
+					<td>".$event['symptom']."</td>
+					<td><a href='batfadb-diagnose.php?faid=".$event[0]."'>Diagnose</a></td>
+				</tr>";
 		}
 		echo "</table>";
 	}
