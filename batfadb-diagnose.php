@@ -22,13 +22,7 @@ include("models/usercake_frameset_header.php");
 if(isset($_POST['faid'])){
 	$faid = $_POST['faid'];
 
-	if($result = mysqli_query($mysqli,"
-		UPDATE `batfa_faevents` SET
-		`diagnosis`='".$_POST['diagnosis']."',
-		`diagnosis_code`='".$_POST['diagnosis_code']."',
-		`diagnosis_date`='".$_POST['diagnosis_date']."',
-		`diagnosed`=1,
-		`diagnosis_user`='".$_POST['diagnosis_user']."' WHERE id=".$_POST['faid']){
+	if($result = mysqli_query($mysqli,"UPDATE batfa_faevents SET diagnosis='".$_POST['diagnosis']."',diagnosis_code='".$_POST['diagnosis_code']."',diagnosis_date='".$_POST['diagnosis_date']."',diagnosed=1,diagnosis_user='".$_POST['diagnosis_user']."' WHERE id=".$_POST['faid'])){
 		echo "<b>Added diagnosis and marked event as <font color='green'>CLOSED</font>.</b><br>";
 	}
 	else{
@@ -59,7 +53,7 @@ if(isset($_GET['faid'])){
 	echo "<h3>Symptom</h3><br>".$event['symptom']."<hr>";
 	echo "<h3>Diagnosis</h3>
 	<div id='diagnosis_input'>
-			<form name='diagnosis' action='batfadb_diagnose.php' method='post'>
+			<form name='diagnosis' action='batfadb-diagnose.php' method='post'>
 				<table>
 					<tr>
 						<td style='vertical-align: top;'>
