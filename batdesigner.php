@@ -33,6 +33,7 @@ background-color:#EAF2D3;
 }
 </style> -->
 <h3>Electrical Specifications</h3>
+<form name='batdesinput' action='batdes_input_parser.php' method='post'>
 <table>
   <tbody>
     <tr>
@@ -50,11 +51,11 @@ background-color:#EAF2D3;
     <tr>
       <td>Voltage<br>
       </td>
-      <td style="text-align: center;">[v_min]<br>
+      <td style="text-align: center;"><input type='text' name='v_min' size=5><br>
       </td>
-      <td style="text-align: center;">[v_nom]<br>
+      <td style="text-align: center;"><input type='text' name='v_nom' size=5><br>
       </td>
-      <td style="text-align: center;">[v_max]<br>
+      <td style="text-align: center;"><input type='text' name='v_max' size=5><br>
       </td>
       <td>V<br>
       </td>
@@ -68,9 +69,9 @@ background-color:#EAF2D3;
       </td>
       <td style="text-align: center;"><br>
       </td>
-      <td style="text-align: center;">[i_dis_cont]<br>
+      <td style="text-align: center;"><input type='text' name='i_dis_cont' size=5><br>
       </td>
-      <td style="text-align: center;">[i_dis_pulse]<br>
+      <td style="text-align: center;"><input type='text' name='i_dis_pulse' size=5><br>
       </td>
       <td>A<br>
       </td>
@@ -82,7 +83,7 @@ background-color:#EAF2D3;
       </td>
       <td style="text-align: center;"><br>
       </td>
-      <td style="text-align: center;">[i_dis_pulse_dur]<br>
+      <td style="text-align: center;"><input type='text' name='i_dis_pulse_dur' size=5><br>
       </td>
       <td>sec<br>
       </td>
@@ -90,18 +91,18 @@ background-color:#EAF2D3;
     <tr>
       <td>Energy<br>
       </td>
-      <td style="text-align: center;">[energy]<br>
+      <td style="text-align: center;"><input type='text' name='energy' size=5><br>
       </td>
       <td style="text-align: center;"><br>
       </td>
       <td style="text-align: center;"><br>
       </td>
-      <td>() Ah () Wh </td>
+      <td><input type='radio' name='energy_uom' value='Ah' checked=1> Ah <input type='radio' name='energy_uom' value='Wh'> Wh </td>
     </tr>
     <tr>
       <td>Runtime<br>
       </td>
-      <td style="text-align: center;">[time_op_min]<br>
+      <td style="text-align: center;"><input type='text' name='time_op_min' size=5><br>
       </td>
       <td style="text-align: center;"><br>
       </td>
@@ -116,7 +117,7 @@ background-color:#EAF2D3;
       </td>
       <td style="text-align: center;"><br>
       </td>
-      <td style="text-align: center;">[time_st_max]</td>
+      <td style="text-align: center;"><input type='text' name='time_st_max' size=5></td>
       <td>months</td>
     </tr>
     <tr>
@@ -127,8 +128,8 @@ background-color:#EAF2D3;
       <td>Current</td>
       <td style="text-align: center;"><br>
       </td>
-      <td style="text-align: center;">[i_chg_cont]</td>
-      <td style="text-align: center;">[i_chg_pulse]</td>
+      <td style="text-align: center;"><input type='text' name='i_chg_cont' size=5></td>
+      <td style="text-align: center;"><input type='text' name='i_chg_pulse' size=5></td>
       <td>A</td>
     </tr>
     <tr>
@@ -137,7 +138,7 @@ background-color:#EAF2D3;
       </td>
       <td style="text-align: center;"><br>
       </td>
-      <td style="text-align: center;">[i_chg_pulse_dur]</td>
+      <td style="text-align: center;"><input type='text' name='i_chg_pulse_dur' size=5></td>
       <td>sec</td>
     </tr>
     <tr>
@@ -146,7 +147,7 @@ background-color:#EAF2D3;
       </td>
       <td style="text-align: center;"><br>
       </td>
-      <td style="text-align: center;">[time_chg_min]</td>
+      <td style="text-align: center;"><input type='text' name='time_chg_min' size=5></td>
       <td>minutes</td>
     </tr>
   </tbody>
@@ -164,10 +165,10 @@ background-color:#EAF2D3;
     </tr>
     <tr>
       <td>Dimensions</td>
-      <td style="text-align: center;">[dim_x]</td>
-      <td style="text-align: center;">[dim_y]</td>
-      <td style="text-align: center;">[dim_z]</td>
-      <td>() in () mm</td>
+      <td style="text-align: center;"><input type='text' name='dim_x' size=5></td>
+      <td style="text-align: center;"><input type='text' name='dim_y' size=5></td>
+      <td style="text-align: center;"><input type='text' name='dim_z' size=5></td>
+      <td><input type='radio' name='dim_uom' value='in' checked=1> in <input type='radio' name='dim_uom' value='mm'> mm</td>
     </tr>
     <tr>
       <td><br>
@@ -180,18 +181,18 @@ background-color:#EAF2D3;
     </tr>
     <tr>
       <td>Operating Temperature</td>
-      <td style="text-align: center;">[temp_op_min]</td>
+      <td style="text-align: center;"><input type='text' name='temp_op_min' size=5></td>
       <td style="text-align: center;"><br>
       </td>
-      <td style="text-align: center;">[temp_op_max]</td>
+      <td style="text-align: center;"><input type='text' name='temp_op_max' size=5></td>
       <td>°C</td>
     </tr>
     <tr>
       <td>Storage Temperature</td>
-      <td style="text-align: center;">[temp_st_min]</td>
+      <td style="text-align: center;"><input type='text' name='temp_st_min' size=5></td>
       <td style="text-align: center;"><br>
       </td>
-      <td style="text-align: center;">[temp_st_max]</td>
+      <td style="text-align: center;"><input type='text' name='temp_st_max' size=5></td>
       <td>°C</td>
     </tr>
     <tr>
@@ -200,12 +201,12 @@ background-color:#EAF2D3;
       </td>
       <td style="text-align: center;"><br>
       </td>
-      <td style="text-align: center;">[weight_max]</td>
+      <td style="text-align: center;"><input type='text' name='weight_max' size=5></td>
       <td>() lbs () kg</td>
     </tr>
     <tr>
       <td>Circuit Protection</td>
-      <td>() Active () Passive</td>
+      <td><input type='radio' name='protection_type' value='active' checked=1> Active <br><input type='radio' name='protection_type' value='passive'> Passive</td>
       <td><br>
       </td>
       <td><br>
@@ -215,7 +216,7 @@ background-color:#EAF2D3;
     </tr>
     <tr>
       <td>Fuel Gauging</td>
-      <td>[] Required</td>
+      <td><input type='checkbox' name='fuel_gauge_req' value=1> Required</td>
       <td><br>
       </td>
       <td><br>
@@ -250,41 +251,41 @@ background-color:#EAF2D3;
         </span></td>
       <td><br>
       </td>
-      <td>[] Any</td>
-      <td>[] Any </td>
+      <td><input type='radio' name='chemistry' value='any' checked=1> Any</td>
+      <td><input type='checkbox' name='formfactor' value='any' checked=1> Any </td>
     </tr>
     <tr>
       <td>Runtime</td>
-      <td style="text-align: center;">(runtime_1)</td>
-      <td style="text-align: center;">(runtime_2)</td>
+      <td style="text-align: center;"><input type='radio' name='optimization1' value='runtime' checked=1></td>
+      <td style="text-align: center;"><input type='radio' name='optimization2' value='runtime' ></td>
       <td><br>
       </td>
-      <td>[] Li-Ion NMC/LMO</td>
-      <td>[] Cylindrical </td>
+      <td><input type='radio' name='chemistry' value='nmc'> Li-Ion NMC/LMO</td>
+      <td><input type='checkbox' name='formfactor' value='cylindrical'> Cylindrical </td>
     </tr>
     <tr>
       <td>Power</td>
-      <td style="text-align: center;">(power_1)</td>
-      <td style="text-align: center;">(power_2)</td>
+      <td style="text-align: center;"><input type='radio' name='optimization1' value='power'></td>
+      <td style="text-align: center;"><input type='radio' name='optimization2' value='power'></td>
       <td><br>
       </td>
-      <td>[] Li-Ion LFP </td>
-      <td>[] Prismatic </td>
+      <td><input type='radio' name='chemistry' value='lfp'> Li-Ion LFP </td>
+      <td><input type='checkbox' name='formfactor' value='prismatic'> Prismatic </td>
     </tr>
     <tr>
       <td>Weight</td>
-      <td style="text-align: center;">(weight_1)</td>
-      <td style="text-align: center;">(weight_2)</td>
+      <td style="text-align: center;"><input type='radio' name='optimization1' value='weight'></td>
+      <td style="text-align: center;"><input type='radio' name='optimization2' value='weight'></td>
       <td><br>
       </td>
       <td><br>
       </td>
-      <td>[] Pouch </td>
+      <td><input type='checkbox' name='formfactor' value='pouch'> Pouch </td>
     </tr>
     <tr>
       <td>Volume</td>
-      <td style="text-align: center;">(volume_1)</td>
-      <td style="text-align: center;">(volume_2)</td>
+      <td style="text-align: center;"><input type='radio' name='optimization1' value='volume'></td>
+      <td style="text-align: center;"><input type='radio' name='optimization2' value='volume'></td>
       <td><br>
       </td>
       <td><br>
@@ -294,8 +295,8 @@ background-color:#EAF2D3;
     </tr>
     <tr>
       <td>Cost</td>
-      <td style="text-align: center;">(cost_1)</td>
-      <td style="text-align: center;">(cost_2)</td>
+      <td style="text-align: center;"><input type='radio' name='optimization1' value='cost'></td>
+      <td style="text-align: center;"><input type='radio' name='optimization2' value='cost' checked=1></td>
       <td><br>
       </td>
       <td><br>
@@ -305,6 +306,8 @@ background-color:#EAF2D3;
     </tr>
   </tbody>
 </table>
+<p align='center'><input type='submit' value='Submit' class='submit'></p>
+</form>
 <br>
 
 <?php
