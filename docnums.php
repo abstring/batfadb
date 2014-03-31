@@ -6,16 +6,46 @@ require_once("models/usercake_frameset_header.php");
 ?>
 <div align='center'><img src="img/docicon.png"></div>
 <h1>Document Number Index</h1>
-<p align='center'><b>
-	<a href='docnums.php'>Home</a> | 
-	<a href='docnums.php?cat=1'>ECOs</a> | 
-	<a href='docnums.php?cat=2'>Electrical Parts</a> | 
-	<a href='docnums.php?cat=3'>Mechanical Parts</a> | 
-	<a href='docnums.php?cat=4'>Fixtures</a> | 
-	<a href='docnums.php?cat=5'>Assemblies</a> | 
-	<a href='docnums.php?cat=6'>Documents</a> | 
-	<a href='docnums.php?cat=7'>Software</a>
-</b></p>
+
+<?php
+//Category definitions array
+//Categories:
+// 1 = ECOs 				ECO1###
+// 2 = Electrical Parts 	AV-01-1####
+// 3 = Mechanical Parts 	AV-02-2####
+// 4 = Fixtrues 			AV-02-1####
+// 5 = Assemblies 			AV-03-1####
+// 6 = Documents 			AV-04-1####	
+// 7 = Software 			AV-05-1####
+$category = array(
+1 	=>	"ECOs",
+2 	=> 	"Electrical Parts",
+3 	=> 	"Mechanical Parts",
+4 	=>	"Fixtures",
+5 	=> 	"Assemblies",
+6 	=>	"Documents",
+7 	=>	"Software"
+	);
+
+//Multidimensional array of category names and part numbering pattern regex expressions
+$docnumindex = array(
+	array(1,"ECOs",				"ECO"),
+	array(2,"Electrical Parts",	"AV-01-1"),
+	array(3,"Mechanical Parts",	"AV-02-2"),
+	array(4,"Fixtures",			"AV-02-1"),
+	array(5,"Assemblies",		"AV-03-1"),
+	array(4,"Documents",		"AV-04-1"),
+	array(4,"Software",			"AV-05-1")
+	);
+
+//Create shortcut menu on the top of the page for easy navigation
+echo "<p align='center'><b>| <a href='docnums.php'>Home</a> | ";
+foreach ($category as $catnum => $catname) {
+	echo "<a href='docnums.php?cat=".$catnum."'>".$catname."</a> | ";
+}
+echo "</b></p>";
+?>
+
 <div id='searchbox'>
 	<form name='search' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
 		<p align='center'>
@@ -42,48 +72,83 @@ require_once("models/usercake_frameset_header.php");
 // 7 = Software 			AV-05-1####
 
 //If we have NO post data
-if(empty($_POST)){}
+if(empty($_POST)){
+	//echo "empty POST<br>";
+}
+
+//Database tables: batfadb -> docnums -> fields:
+// id
+// number
+// rev
+// customer
+// description
+// workorder
+// author
+// datecreated (auto)
+// datemodified
+// project
 
 //If a menu category is clicked	
 if(isset($_GET['cat'])){
 	$cat = $_GET['cat'];
-	
-	switch ($cat){
-		case 1:
-			echo "ECOs <br>";
-			break;
-		case 2:
-			echo "Electrical Parts <br>";
-			break;
-		case 3:
-			echo "Mechanical Parts <br>";
-			break;
-		case 4:
-			echo "Fixtures <br>";
-			break;
-		case 5:
-			echo "Assemblies <br>";
-			break;
-		case 6:
-			echo "Documents <br>";
-			break;
-		case 7:
-			echo "Software <br>";
-			break;
-		default:
-			echo "ERROR: Category not defined. <br>";
-	}
+	echo "<h2>".$docnumindex[$cat - 1][1]."</h2><br>"; //Show the category name under the hr
+	//Display a filtered list of documents
+	echo "[Placeholder for filtered list of ".$docnumindex[$cat - 1][1]." documents. The regex for these types of documents is \"".$docnumindex[$cat - 1][2]."\"]";
+	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number REGEXP '".$docnumindex[$cat - 1][2]."' OR pcbsn='".$sninput."'");
+	//$batrecord = mysqli_fetch_array($result); 	//Store the result in a var.
 }
 
-//If a post is returned, process it.
-if(isset($_POST)){
+//Process searches
+//First, the general case where no category is selected:
+if(isset($_POST['searchtext'])&&!isset($_POST['cat'])){
 	//If the post contains the category, use it.
-	if(isset($_POST['cat'])){
-		$cat = $_POST['cat'];
-		echo "Search results:<br>
-			[placeholder for stuff] cat=".$cat."<br>";
+	echo "Search results for <b>".$_POST['searchtext']."</b>:<br>
+			[placeholder for search results for \"".$_POST['searchtext']."\" in all categories]";
+	$searchtext = "%".$_POST['searchtext']."%"; //Add a "%" before and after to the search term in order to grab anything before/after the text - otherwise it will only key as "starts with" instead of "contains".
+	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number LIKE '".$searchtext."' OR customer LIKE '".$searchtext."' OR description LIKE '".$searchtext."' OR workorder LIKE '".$searchtext."' OR author LIKE '".$searchtext."'");
+	//Store the database results in an array
+	$searchresults = array();
+	while ($row = mysqli_fetch_array($result)){
+		$searchresults[] = $row;	//Array of doc arrays
 	}
+	//var_dump($searchresults);
+	echo "
+			<table>
+			<tr>
+				<th>Number</th>
+				<th>Rev</th>
+				<th>Customer</th>
+				<th>Description</th>
+				<th>Project</th>
+				<th>Work Order</th>
+				<th>Author</th>
+				<th>Date</th>
+			</tr>";
+
+	foreach($searchresults as $item){
+		echo "
+			<tr>
+				<td>".$item['number']."</td>
+				<td>".$item['rev']."</td>
+				<td>".$item['customer']."</td>
+				<td>".$item['description']."</td>
+				<td>".$item['project']."</td>
+				<td>".$item['workorder']."</td>
+				<td>".$item['author']."</td>
+				<td>".date('m/d/Y',strtotime($item['datecreated']))."</td>
+			</tr>";
+
+	}
+	echo "</table>";
 }
+//Second, the case where a specific category is selected:
+if(isset($_POST['searchtext'])&&isset($_POST['cat'])){
+	//If the post contains the category, use it.
+	echo "Search results for <b>".$_POST['searchtext']."</b>:<br>
+			[placeholder for search results for \"".$_POST['searchtext']."\" in category ".$_POST['cat']."]";
+}
+
+
 
 ?>
 
