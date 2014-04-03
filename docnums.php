@@ -36,14 +36,49 @@ $docnumindex = array(
 	array(3,"Mechanical Parts",	"AV-02-2"),
 	array(4,"Fixtures",			"AV-02-1"),
 	array(5,"Assemblies",		"AV-03-1"),
-	array(4,"Documents",		"AV-04-1"),
-	array(4,"Software",			"AV-05-1")
+	array(6,"Documents",		"AV-04-1"),
+	array(7,"Software",			"AV-05-1")
 	);
+
+//Class definitions for tables used in this application
+class doctable {
+	public function maketable($tabledata) {
+		echo "
+			<table class='spectable'>
+			<tr>
+				<th width='90'>Number</th>
+				<th width='35'>Rev</th>
+				<th width='90'>Customer</th>
+				<th width='300'>Description</th>
+				<th width='90'>Project</th>
+				<th width='60'>ECO/WO</th>
+				<th width='90'>Author</th>
+				<th width='90'>Date</th>
+			</tr>";
+
+		foreach($tabledata as $item){
+			echo "
+				<tr>
+					<td align='center'>".$item['number']."</td>
+					<td align='center'>".$item['rev']."</td>
+					<td align='left'>".$item['customer']."</td>
+					<td align='left'>".$item['description']."</td>
+					<td align='center'>".$item['project']."</td>
+					<td align='center'>".$item['workorder']."</td>
+					<td align='center'>".$item['author']."</td>
+					<td align='center'>".date('n/j/Y',strtotime($item['datecreated']))."</td>
+				</tr>";
+		}
+		echo "</table>";
+	}
+	
+}
 
 //Create shortcut menu on the top of the page for easy navigation
 echo "<p align='center'><b>| <a href='docnums.php'>Home</a> | ";
-foreach ($category as $catnum => $catname) {
-	echo "<a href='docnums.php?cat=".$catnum."'>".$catname."</a> | ";
+
+for ($cat = 0; $cat <= max(array_map("max", $docnumindex))-1; $cat++) {
+	echo "<a href='docnums.php?cat=".$docnumindex[$cat][0]."'>".$docnumindex[$cat][1]."</a> | ";
 }
 echo "</b></p>";
 ?>
@@ -95,9 +130,16 @@ if(isset($_GET['cat'])){
 	$cat = $_GET['cat'];
 	echo "<h2>".$docnumindex[$cat - 1][1]."</h2><br>"; //Show the category name under the hr
 	//Display a filtered list of documents
-	echo "[Placeholder for filtered list of ".$docnumindex[$cat - 1][1]." documents. The regex for these types of documents is \"".$docnumindex[$cat - 1][2]."\"]";
-	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number REGEXP '".$docnumindex[$cat - 1][2]."' OR pcbsn='".$sninput."'");
-	//$batrecord = mysqli_fetch_array($result); 	//Store the result in a var.
+	echo "Showing all <b>".$docnumindex[$cat - 1][1]."</b>. These all start with \"".$docnumindex[$cat - 1][2]."\"<br><br>";
+	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number REGEXP '".$docnumindex[$cat - 1][2]."';");
+	//Store the database results in an array
+	$searchresults = array();
+	while ($row = mysqli_fetch_array($result)){
+		$searchresults[] = $row;	//Array of doc arrays
+	}
+	
+	$table = new doctable;
+	$table->maketable($searchresults);
 }
 
 //Process searches
@@ -114,35 +156,10 @@ if(isset($_POST['searchtext'])&&!isset($_POST['cat'])){
 	while ($row = mysqli_fetch_array($result)){
 		$searchresults[] = $row;	//Array of doc arrays
 	}
-	//var_dump($searchresults);
-	echo "
-			<table class='spectable'>
-			<tr>
-				<th width='90'>Number</th>
-				<th width='35'>Rev</th>
-				<th width='90'>Customer</th>
-				<th width='300'>Description</th>
-				<th width='90'>Project</th>
-				<th width='60'>ECO/WO</th>
-				<th width='90'>Author</th>
-				<th width='90'>Date</th>
-			</tr>";
+	
+	$table = new doctable;
+	$table->maketable($searchresults);
 
-	foreach($searchresults as $item){
-		echo "
-			<tr>
-				<td align='center'>".$item['number']."</td>
-				<td align='center'>".$item['rev']."</td>
-				<td align='left'>".$item['customer']."</td>
-				<td align='left'>".$item['description']."</td>
-				<td align='center'>".$item['project']."</td>
-				<td align='center'>".$item['workorder']."</td>
-				<td align='center'>".$item['author']."</td>
-				<td align='center'>".date('n/j/Y',strtotime($item['datecreated']))."</td>
-			</tr>";
-
-	}
-	echo "</table>";
 }
 //Second, the case where a specific category is selected:
 if(isset($_POST['searchtext'])&&isset($_POST['cat'])){
