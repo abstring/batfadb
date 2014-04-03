@@ -17,6 +17,8 @@ require_once("models/usercake_frameset_header.php");
 // 5 = Assemblies 			AV-03-1####
 // 6 = Documents 			AV-04-1####	
 // 7 = Software 			AV-05-1####
+
+
 $category = array(
 1 	=>	"ECOs",
 2 	=> 	"Electrical Parts",
@@ -101,10 +103,11 @@ if(isset($_GET['cat'])){
 //Process searches
 //First, the general case where no category is selected:
 if(isset($_POST['searchtext'])&&!isset($_POST['cat'])){
-	//If the post contains the category, use it.
-	echo "Search results for <b>".$_POST['searchtext']."</b>:<br>
-			[placeholder for search results for \"".$_POST['searchtext']."\" in all categories]";
+
+	echo "Showing search results for <b>".$_POST['searchtext']."</b>:<br><br>";
+	
 	$searchtext = "%".$_POST['searchtext']."%"; //Add a "%" before and after to the search term in order to grab anything before/after the text - otherwise it will only key as "starts with" instead of "contains".
+
 	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number LIKE '".$searchtext."' OR customer LIKE '".$searchtext."' OR description LIKE '".$searchtext."' OR workorder LIKE '".$searchtext."' OR author LIKE '".$searchtext."'");
 	//Store the database results in an array
 	$searchresults = array();
@@ -113,29 +116,29 @@ if(isset($_POST['searchtext'])&&!isset($_POST['cat'])){
 	}
 	//var_dump($searchresults);
 	echo "
-			<table>
+			<table class='spectable'>
 			<tr>
-				<th>Number</th>
-				<th>Rev</th>
-				<th>Customer</th>
-				<th>Description</th>
-				<th>Project</th>
-				<th>Work Order</th>
-				<th>Author</th>
-				<th>Date</th>
+				<th width='90'>Number</th>
+				<th width='35'>Rev</th>
+				<th width='90'>Customer</th>
+				<th width='300'>Description</th>
+				<th width='90'>Project</th>
+				<th width='60'>ECO/WO</th>
+				<th width='90'>Author</th>
+				<th width='90'>Date</th>
 			</tr>";
 
 	foreach($searchresults as $item){
 		echo "
 			<tr>
-				<td>".$item['number']."</td>
-				<td>".$item['rev']."</td>
-				<td>".$item['customer']."</td>
-				<td>".$item['description']."</td>
-				<td>".$item['project']."</td>
-				<td>".$item['workorder']."</td>
-				<td>".$item['author']."</td>
-				<td>".date('m/d/Y',strtotime($item['datecreated']))."</td>
+				<td align='center'>".$item['number']."</td>
+				<td align='center'>".$item['rev']."</td>
+				<td align='left'>".$item['customer']."</td>
+				<td align='left'>".$item['description']."</td>
+				<td align='center'>".$item['project']."</td>
+				<td align='center'>".$item['workorder']."</td>
+				<td align='center'>".$item['author']."</td>
+				<td align='center'>".date('n/j/Y',strtotime($item['datecreated']))."</td>
 			</tr>";
 
 	}
