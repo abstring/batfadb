@@ -131,7 +131,7 @@ if(isset($_GET['cat'])){
 	echo "<h2>".$docnumindex[$cat - 1][1]."</h2><br>"; //Show the category name under the hr
 	//Display a filtered list of documents
 	echo "Showing all <b>".$docnumindex[$cat - 1][1]."</b>. These all start with \"".$docnumindex[$cat - 1][2]."\"<br><br>";
-	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number REGEXP '".$docnumindex[$cat - 1][2]."';");
+	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number REGEXP '".$docnumindex[$cat - 1][2]."' ORDER BY datemodified DESC;");
 	//Store the database results in an array
 	$searchresults = array();
 	while ($row = mysqli_fetch_array($result)){
@@ -150,7 +150,7 @@ if(isset($_POST['searchtext'])&&!isset($_POST['cat'])){
 	
 	$searchtext = "%".$_POST['searchtext']."%"; //Add a "%" before and after to the search term in order to grab anything before/after the text - otherwise it will only key as "starts with" instead of "contains".
 
-	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number LIKE '".$searchtext."' OR customer LIKE '".$searchtext."' OR description LIKE '".$searchtext."' OR workorder LIKE '".$searchtext."' OR author LIKE '".$searchtext."'");
+	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number LIKE '".$searchtext."' OR customer LIKE '".$searchtext."' OR description LIKE '".$searchtext."' OR workorder LIKE '".$searchtext."' OR author LIKE '".$searchtext."' ORDER BY datemodified DESC");
 	//Store the database results in an array
 	$searchresults = array();
 	while ($row = mysqli_fetch_array($result)){
