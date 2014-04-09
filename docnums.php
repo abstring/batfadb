@@ -81,26 +81,55 @@ for ($cat = 0; $cat <= max(array_map("max", $docnumindex))-1; $cat++) {
 	echo "<a href='docnums.php?cat=".$docnumindex[$cat][0]."'>".$docnumindex[$cat][1]."</a> | ";
 }
 echo "</b></p>";
-?>
 
-<div id='searchbox'>
-	<form name='search' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
-		<p align='center'>
-			<label>Search:</label>
-			<input type='text' name='searchtext' size=50>
-			<?php if(isset($_GET['cat'])){echo "<input type='hidden' name='cat' value=".$_GET['cat'].">";}?>
-			<input type='submit' value='Go' class='submit'><br>
-			<font size=1 color="grey">Search for any text, including document numbers.<br>
-			Search for a date range by entering mm/dd/yyyy - mm/dd/yyyy.</font>
-		</p>
-	</form>
-</div>
+//See if user is allowed to edit records (Administrator-2 or Engineering-5)
+if($loggedInUser->checkPermission(array(2)) || $loggedInUser->checkPermission(array(5))){
+	$editor = 1;
+}
+
+?>
+<!-- A Google-like search box -->
+<!-- <div id='searchbox'> -->
+<table align='center'>
+	<tr>
+		<td valign='top'>
+			<form name='search' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
+				<p align='center'>
+					<label>Search:</label>
+					<input type='text' name='searchtext' size=50>
+					<?php if(isset($_GET['cat'])){echo "<input type='hidden' name='cat' value=".$_GET['cat'].">";}?>
+					<input type='submit' value='Go' class='submit'><button type='button'>New</button><br>
+					<font size=1 color="grey">Search for any text, including document numbers.<br>
+					Search for a date range by entering mm/dd/yyyy - mm/dd/yyyy.</font>
+				</p>
+			</form>
+		</td>
+		<?php
+			if(isset($editor)){
+				echo "<td valign='middle'><form action='".$_SERVER['PHP_SELF']."' method='post'>";
+				if(isset($_GET['cat'])){
+					echo "<input type='hidden' name='cat' value=".$_GET['cat'].">";
+				}
+				echo "<input type='hidden' name='new' value=1>
+			    	<input type='submit' value='New Document'>
+					</form></td>";
+			}
+		?>
+	</tr>
+</table>
 <hr>
 
 <?php
 
-//If we have NO post data
-if(!isset($_POST['cat'])&&!isset($_GET['cat'])&&!isset($_GET['doc'])){
+if(isset($_POST['new'])){
+	echo "New button pressed!!! Yay!<br><br>";
+}
+
+
+
+
+//If we have NO post data and no search term
+if(!isset($_POST['cat'])&&!isset($_GET['cat'])&&!isset($_GET['doc'])&&!isset($_POST['searchtext'])){
 	//Show the 10 most recently updated documents
 	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE 1 ORDER BY datemodified DESC LIMIT 0,10;");
 		//Store the database results in an array

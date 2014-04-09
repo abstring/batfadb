@@ -42,7 +42,7 @@ echo "
 <body>
 <div id='wrapper'>
 <div id='content'>
-<h1>Aved Battery Failure Analysis Database</h1>
+<h1>Aved Engineering Department</h1>
 <h2>Activate Account</h2>
 
 <div id='left-nav'>";

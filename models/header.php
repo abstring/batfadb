@@ -8,7 +8,7 @@ echo "
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
-<title>Aved Battery Failure Analysis Database</title>
+<title>Aved Engineering Department</title>
 <link href='".$template."' rel='stylesheet' type='text/css' />
 <!-- <link href='css/main.css' rel='stylesheet' type='text/css' /> -->
 <script src='models/funcs.js' type='text/javascript'>
