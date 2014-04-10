@@ -89,40 +89,53 @@ if($loggedInUser->checkPermission(array(2)) || $loggedInUser->checkPermission(ar
 
 ?>
 <!-- A Google-like search box -->
-<!-- <div id='searchbox'> -->
-<table align='center'>
-	<tr>
-		<td valign='top'>
+<div align='center'>
 			<form name='search' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
 				<p align='center'>
 					<label>Search:</label>
 					<input type='text' name='searchtext' size=50>
 					<?php if(isset($_GET['cat'])){echo "<input type='hidden' name='cat' value=".$_GET['cat'].">";}?>
-					<input type='submit' value='Go' class='submit'><button type='button'>New</button><br>
+					<input type='submit' value='Go' class='submit'>
+					<?php
+						if(isset($editor)){
+							echo "<form action='".$_SERVER['PHP_SELF']."' method='post' display='inline'>";
+							if(isset($_GET['cat'])){
+								echo "<input type='hidden' name='cat' value=".$_GET['cat'].">";
+							}
+							echo "<input type='hidden' name='new' value=1>
+						    	<input type='submit' value='New'>
+								</form>";
+						}
+					?>
 					<font size=1 color="grey">Search for any text, including document numbers.<br>
 					Search for a date range by entering mm/dd/yyyy - mm/dd/yyyy.</font>
 				</p>
 			</form>
-		</td>
-		<?php
-			if(isset($editor)){
-				echo "<td valign='middle'><form action='".$_SERVER['PHP_SELF']."' method='post'>";
-				if(isset($_GET['cat'])){
-					echo "<input type='hidden' name='cat' value=".$_GET['cat'].">";
-				}
-				echo "<input type='hidden' name='new' value=1>
-			    	<input type='submit' value='New Document'>
-					</form></td>";
-			}
-		?>
-	</tr>
-</table>
+</div>
 <hr>
 
 <?php
-
+//Process "new" button actions.
 if(isset($_POST['new'])){
-	echo "New button pressed!!! Yay!<br><br>";
+	echo "New button pressed!!! Yay!<br>
+		<form action='post' display='inline'>";
+	//If the category was already set, use it for the new document.
+	if(isset($_POST['cat'])){
+		echo "<input type='hidden' name='newdoc_cat' value=".$docnumindex[$_POST['cat']-1][0].">";
+	}
+	//If no category is set, create a select box to choose one.
+	if(!isset($_POST['cat'])){
+		echo "
+		<select name='newdoc_cat'>";
+		for ($cat = 0; $cat <= max(array_map("max", $docnumindex))-1; $cat++) {
+			echo "<option value=".$docnumindex[$cat][0]."'>".$docnumindex[$cat][1]."</option>";
+		}
+		echo "
+		</select>";
+	}
+	echo "
+		<input type='text' name='newdoc_rev' value='A' size=3>
+		</form>";
 }
 
 
