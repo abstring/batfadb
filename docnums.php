@@ -82,20 +82,30 @@ for ($cat = 0; $cat <= max(array_map("max", $docnumindex))-1; $cat++) {
 }
 echo "</b></p>";
 
-//See if user is allowed to edit records (Administrator-2 or Engineering-5)
-if($loggedInUser->checkPermission(array(2)) || $loggedInUser->checkPermission(array(5))){
-	$editor = 1;
+
+//If the user is logged in, this method will exist. Otherwise the user is logged out.
+if(method_exists($loggedInUser, 'checkPermission')){
+	//See if user is allowed to edit records (Administrator-2 or Engineering-5)
+	if($loggedInUser->checkPermission(array(2)) || $loggedInUser->checkPermission(array(5))){
+		$editor = 1;
+	}
 }
+
 
 ?>
 <!-- A Google-like search box -->
 <div align='center'>
-			<form name='search' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post'>
+			
 				<p align='center'>
+					
+					<form name='search' action='<?php echo $_SERVER['PHP_SELF']; ?>' method='post' display='inline'>
 					<label>Search:</label>
 					<input type='text' name='searchtext' size=50>
 					<?php if(isset($_GET['cat'])){echo "<input type='hidden' name='cat' value=".$_GET['cat'].">";}?>
 					<input type='submit' value='Go' class='submit'>
+					</form>
+					<font size=1 color="grey">Search for any text, including document numbers.<br>
+					Search for a date range by entering mm/dd/yyyy - mm/dd/yyyy.</font>
 					<?php
 						if(isset($editor)){
 							echo "<form action='".$_SERVER['PHP_SELF']."' method='post' display='inline'>";
@@ -107,20 +117,45 @@ if($loggedInUser->checkPermission(array(2)) || $loggedInUser->checkPermission(ar
 								</form>";
 						}
 					?>
-					<font size=1 color="grey">Search for any text, including document numbers.<br>
-					Search for a date range by entering mm/dd/yyyy - mm/dd/yyyy.</font>
 				</p>
-			</form>
+			
 </div>
 <hr>
 
 <?php
 //Process "new" button actions.
 if(isset($_POST['new'])){
-	echo "New button pressed!!! Yay!<br>
-		<form action='post' display='inline'>";
+	echo "<table class='spectable'>
+			<tr>
+				<form action='post' display='inline'>";
 	//If the category was already set, use it for the new document.
 	if(isset($_POST['cat'])){
+		//Figure out the next part number
+		$nextdocnum = 'ABC12345677';
+		echo "<form id='newdocform'>
+			<table class='spectable'>
+			<tr>
+				<th width='90'>Number</th>
+				<th width='35'>Rev</th>
+				<th width='90'>Customer</th>
+				<th width='300'>Description</th>
+				<th width='90'>Project</th>
+				<th width='60'>ECO/WO</th>
+				<th width='90'>Author</th>
+				<th width='90'>Date</th>
+			</tr>
+			<tr>
+				<td>".$nextdocnum."</td>
+				<td><input type='text' size=2 name='newrev' value='A'></td>
+				<td><input type='text' size=10 name='newcustomer' value='Customer'></td>
+				<td><textarea name='newdescription' form='newdocform' rows=1 cols=35>Description</textarea></td>
+				<td><input type='text' name='newproject' value='Project'></td>
+				<td><input type='text' size=10 name='newwo'></td>
+				<td><input type='text' name='newauthor' value='".$loggedInUser->displayname."'></td>
+				<td><input type='text' size=8 name='newdate' value='".date('n/j/Y')."'></td>
+			</tr>
+			</table>
+					";
 		echo "<input type='hidden' name='newdoc_cat' value=".$docnumindex[$_POST['cat']-1][0].">";
 	}
 	//If no category is set, create a select box to choose one.
@@ -134,11 +169,21 @@ if(isset($_POST['new'])){
 		</select>";
 	}
 	echo "
-		<input type='text' name='newdoc_rev' value='A' size=3>
+		<input type='submit' value='Create'>
 		</form>";
 }
 
-
+// <table class='spectable'>
+// 			<tr>
+// 				<th width='90'>Number</th>
+// 				<th width='35'>Rev</th>
+// 				<th width='90'>Customer</th>
+// 				<th width='300'>Description</th>
+// 				<th width='90'>Project</th>
+// 				<th width='60'>ECO/WO</th>
+// 				<th width='90'>Author</th>
+// 				<th width='90'>Date</th>
+// 			</tr>
 
 
 //If we have NO post data and no search term
