@@ -31,14 +31,27 @@ $category = array(
 
 //Multidimensional array of category names and part numbering pattern regex expressions
 $docnumindex = array(
-	array(1,"ECOs",				"ECO"),
-	array(2,"Electrical Parts",	"AV-01-1"),
-	array(3,"Mechanical Parts",	"AV-02-2"),
-	array(4,"Fixtures",			"AV-02-1"),
-	array(5,"Assemblies",		"AV-03-1"),
-	array(6,"Documents",		"AV-04-1"),
-	array(7,"Software",			"AV-05-1")
+	array(1,"ECOs",				"(ECO)([0-9]{4})"),
+	array(2,"Electrical Parts",	"(AV-01-1)([0-9]{4})"),
+	array(3,"Mechanical Parts",	"(AV-02-2)([0-9]{4})"),
+	array(4,"Fixtures",			"(AV-02-1)([0-9]{4})"),
+	array(5,"Assemblies",		"(AV-03-1)([0-9]{4})"),
+	array(6,"Documents",		"(AV-04-1)([0-9]{4})"),
+	array(7,"Software",			"(AV-05-1)([0-9]{4})")
 	);
+
+function nextdocnumber($cat, $docnumindex){
+	echo "Determining the next document number for category ".$docnumindex[$cat][1].".<br>";
+	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number REGEXP '".$docnumindex[$cat - 1][2]."' ORDER BY datemodified DESC;");
+	//Store the database results in an array
+	$searchresults = array();
+	while ($row = mysqli_fetch_array($result)){
+		$searchresults[] = $row;	//Array of doc arrays
+	}
+
+}
+
+nextdocnumber(0,$docnumindex);
 
 //Class definitions for tables used in this application
 class doctable {
