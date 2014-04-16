@@ -40,18 +40,30 @@ $docnumindex = array(
 	array(7,"Software",			"(AV-05-1)([0-9]{4})")
 	);
 
-function nextdocnumber($cat, $docnumindex){
-	echo "Determining the next document number for category ".$docnumindex[$cat][1].".<br>";
-	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number REGEXP '".$docnumindex[$cat - 1][2]."' ORDER BY datemodified DESC;");
+function nextdocnumber($cat, $docnumindex, $mysqli){
+	//echo "Determining the next document number for category ".$docnumindex[$cat][1].".<br>";
+	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number REGEXP '".$docnumindex[$cat][2]."' ORDER BY datemodified DESC;");
 	//Store the database results in an array
 	$searchresults = array();
 	while ($row = mysqli_fetch_array($result)){
 		$searchresults[] = $row;	//Array of doc arrays
 	}
+	$maxnum = 0;
+	foreach($searchresults as $result){
+		preg_match("/".$docnumindex[$cat][2]."/",$result['number'],$num);
+		if($num[2]>=$maxnum){
+			$maxnum = $num[2];
+		}
+	}
+	//echo $maxnum."<br>";
+	$numformat = "%0".strlen($maxnum)."d";
+	$newnum = $num[1].sprintf("%04d",($maxnum + 1));
+	//echo "Next number in this category is ".$newnum."<br>";
+	return $newnum;
 
 }
-
-nextdocnumber(0,$docnumindex);
+//How to call nextdocnumber:
+//echo nextdocnumber(0,$docnumindex,$mysqli);
 
 //Class definitions for tables used in this application
 class doctable {
@@ -138,52 +150,82 @@ if(method_exists($loggedInUser, 'checkPermission')){
 <?php
 //Process "new" button actions.
 if(isset($_POST['new'])){
-	echo "<table class='spectable'>
-			<tr>
-				<form action='post' display='inline'>";
+	echo "<form action=".$_SERVER['PHP_SELF']." method='post' display='inline' id='newdocform'>
+			<table class='spectable'>
+				<tr>
+					<th width='90'>Number</th>
+					<th width='35'>Rev</th>
+					<th width='90'>Customer</th>
+					<th width='300'>Description</th>
+					<th width='90'>Project</th>
+					<th width='60'>ECO/WO</th>
+					<th width='90'>Author</th>
+					<th width='90'>Date</th>
+				</tr>";
 	//If the category was already set, use it for the new document.
 	if(isset($_POST['cat'])){
-		//Figure out the next part number
-		$nextdocnum = 'ABC12345677';
-		echo "<form id='newdocform'>
-			<table class='spectable'>
-			<tr>
-				<th width='90'>Number</th>
-				<th width='35'>Rev</th>
-				<th width='90'>Customer</th>
-				<th width='300'>Description</th>
-				<th width='90'>Project</th>
-				<th width='60'>ECO/WO</th>
-				<th width='90'>Author</th>
-				<th width='90'>Date</th>
-			</tr>
-			<tr>
-				<td>".$nextdocnum."</td>
-				<td><input type='text' size=2 name='newrev' value='A'></td>
-				<td><input type='text' size=10 name='newcustomer' value='Customer'></td>
-				<td><textarea name='newdescription' form='newdocform' rows=1 cols=35>Description</textarea></td>
-				<td><input type='text' name='newproject' value='Project'></td>
-				<td><input type='text' size=10 name='newwo'></td>
-				<td><input type='text' name='newauthor' value='".$loggedInUser->displayname."'></td>
-				<td><input type='text' size=8 name='newdate' value='".date('n/j/Y')."'></td>
-			</tr>
-			</table>
+		$cat = $_POST['cat']-1;
+		//Calculate the next part number
+		$nextdocnum = nextdocnumber($cat,$docnumindex,$mysqli);
+		echo "
+				<tr>
+					<td>".$nextdocnum."</td>
+					<td><input type='text' size=2 name='newrev' value='A'></td>
+					<td><input type='text' size=10 name='newcustomer' value='Customer'></td>
+					<td><textarea name='newdescription' form='newdocform' rows=1 cols=35>Description</textarea></td>
+					<td><input type='text' name='newproject' value='Project'></td>
+					<td><input type='text' size=10 name='newwo'></td>
+					<td><input type='text' name='newauthor' value='".$loggedInUser->displayname."'></td>
+					<td><input type='text' size=8 name='newdate' value='".date('n/j/Y')."'></td>
+				</tr>
 					";
-		echo "<input type='hidden' name='newdoc_cat' value=".$docnumindex[$_POST['cat']-1][0].">";
+		echo "<input type='hidden' name='newnum' value=".$nextdocnum.">";
 	}
 	//If no category is set, create a select box to choose one.
 	if(!isset($_POST['cat'])){
 		echo "
-		<select name='newdoc_cat'>";
-		for ($cat = 0; $cat <= max(array_map("max", $docnumindex))-1; $cat++) {
-			echo "<option value=".$docnumindex[$cat][0]."'>".$docnumindex[$cat][1]."</option>";
-		}
+				<tr>
+					<td>
+						<select name='newnum'>";
+							for ($cat = 0; $cat <= max(array_map("max", $docnumindex))-1; $cat++) {
+								echo "<option value=".nextdocnumber($cat,$docnumindex,$mysqli).">".$docnumindex[$cat][1]."</option>";
+							}
 		echo "
-		</select>";
+						</select>
+					</td>
+					<td><input type='text' size=2 name='newrev' value='A'></td>
+					<td><input type='text' size=10 name='newcustomer' value='Customer'></td>
+					<td><textarea name='newdescription' form='newdocform' rows=1 cols=35>Description</textarea></td>
+					<td><input type='text' name='newproject' value='Project'></td>
+					<td><input type='text' size=10 name='newwo'></td>
+					<td><input type='text' name='newauthor' value='".$loggedInUser->displayname."'></td>
+					<td><input type='text' size=8 name='newdate' value='".date('n/j/Y')."'></td>
+				</tr>
+
+		";
 	}
 	echo "
-		<input type='submit' value='Create'>
+			</table>
+			<input type='submit' value='Create'>
 		</form>";
+}
+
+//Process data from the new form by checking if newnum is set.
+if(isset($_POST['newnum'])){
+	
+	$newnum = $_POST['newnum'];
+	$newrev = $_POST['newrev'];
+	$newcustomer = $_POST['newcustomer'];
+	$newdescription = $_POST['newdescription'];
+	$newproject = $_POST['newproject'];
+	$newwo = $_POST['newwo'];
+	$newauthor = $_POST['newauthor'];
+	$newdate = date('Y-m-d',strtotime($_POST['newdate']));
+	echo $newnum." | ".$newrev." | ".$newcustomer." | ".$newdescription." | ".$newproject." | ".$newwo." | ".$newauthor." | ".$newdate."<br>";
+
+	if(mysqli_query($mysqli,"INSERT INTO docnums (number, rev, customer, description, project, workorder, author, datemodified, datecreated) VALUES ('".$newnum."','".$newrev."','".$newcustomer."','".$newdescription."','".$newproject."','".$newwo."','".$newauthor."','".$newdate."','".$newdate."')")){
+			echo "Successfully created new document number ".$_POST['newnum']." for customer <b>".$_POST['newcustomer']."</b><br>";
+		}
 }
 
 // <table class='spectable'>
