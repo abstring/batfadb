@@ -10,8 +10,8 @@ switch ($hostname) {
 		//Database Information
 		$db_host = "localhost"; //Host address (most likely localhost)
 		$db_name = "batfadb"; //Name of Database
-		$db_user = "batfadb"; //Name of database user
-		$db_pass = "batfadb"; //Password for database user
+		$db_user = "root"; //Name of database user
+		$db_pass = "aved2013"; //Password for database user
 		$db_table_prefix = "uc_";
 		break;
 	default:
