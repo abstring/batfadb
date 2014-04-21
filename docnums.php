@@ -41,6 +41,9 @@ $docnumindex = array(
 	);
 
 function nextdocnumber($cat, $docnumindex, $mysqli){
+//How to call nextdocnumber:
+//echo nextdocnumber(0,$docnumindex,$mysqli);
+
 	//echo "Determining the next document number for category ".$docnumindex[$cat][1].".<br>";
 	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number REGEXP '".$docnumindex[$cat][2]."' ORDER BY datemodified DESC;");
 	//Store the database results in an array
@@ -62,8 +65,16 @@ function nextdocnumber($cat, $docnumindex, $mysqli){
 	return $newnum;
 
 }
-//How to call nextdocnumber:
-//echo nextdocnumber(0,$docnumindex,$mysqli);
+
+function category($docnumber, $docnumindex){
+	//This function takes the document number and parses out what type of document it is. It returns a string containing the document category type.
+	foreach($docnumindex as $item){
+		if (preg_match("/".$item[2]."/", $docnumber)){
+			return $item[1];
+		}
+	}
+}
+
 
 //Class definitions for tables used in this application
 class doctable {
@@ -334,21 +345,64 @@ if(isset($_POST['searchtext'])&&isset($_POST['cat'])){
 //If a specific document has been requested:
 if(isset($_GET['doc'])){
 	$docid = $_GET['doc'];
-	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number = '".$docid."';");
-	//Store the database results in an array
 	
+	//Grab the document iteslf
+	$result = mysqli_query($mysqli,"SELECT * FROM docnums WHERE number = '".$docid."';");
 	$doc = mysqli_fetch_array($result);
-	echo "Number: ".$doc['number']." Description: ".$doc['description']."<br>";
+
+	//Grab any revisions associated with it.
+	$result = mysqli_query($mysqli,"SELECT * FROM docnums_revisions WHERE docnumber = '".$docid."' ORDER BY level DESC;");
+	while ($row = mysqli_fetch_array($result)){
+			$revisions[] = $row;
+		}
+
+	echo "<font size=6>".$doc['number']."</font><br>";
 	echo "
-		<form>
 		<table>
-			<tr>
-				<td>Document Number:</td><td>
-			</tr>
+			<tr valign='top'><td align='right'><b>Type:</b></td><td>".category($doc['number'], $docnumindex)."</td></tr>
+			<tr valign='top'><td align='right'><b>Customer:</b></td><td>".$doc['customer']."</td></tr>
+			<tr valign='top'><td align='right'><b>Description:</b></td><td>".$doc['description']."</td></tr>
+			<tr valign='top'><td align='right'><b>Project:</b></td><td>".$doc['project']."</td></tr>
+			<tr valign='top'><td align='right'><b>ECO/WO:</b></td><td>".$doc['workorder']."</td></tr>
+			<tr valign='top'><td align='right'><b>Author:</b></td><td>".$doc['author']."</td></tr>
+			<tr valign='top'><td align='right'><b>Last Modification Date:</b></td><td>".$doc['datemodified']."</td></tr>
+			<tr valign='top'><td align='right'><b>Creation Date:</b></td><td>".$doc['datecreated']."</td></tr>
+		</table>
+		<h3><u>Revisions</u></h3>
+		
 	";
+	if(isset($revisions)){
+		echo "<table>
+			<tr>
+				<th>Rev</th>
+				<th>Comment</th>
+				<th>Author</th>
+				<th>Date</th>
+			</tr>";
+		foreach($revisions as $rev){
+			echo "<tr>
+					<td>".$rev['level']."</td>
+					<td>".$rev['comment']."</td>
+					<td>".$rev['author']."</td>
+					<td>".$rev['datecreated']."</td>
+				</tr>
+					";
+		}
+	}
+	else{
+		echo "No revisions entered.<br>";
+	}
+	echo "</table>";
 }
 
-
+// <th width='90'>Number</th>
+// 				<th width='35'>Rev</th>
+// 				<th width='90'>Customer</th>
+// 				<th width='300'>Description</th>
+// 				<th width='90'>Project</th>
+// 				<th width='60'>ECO/WO</th>
+// 				<th width='90'>Author</th>
+// 				<th width='90'>Date</th>
 
 ?>
 
