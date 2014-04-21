@@ -8,6 +8,10 @@ require_once("models/usercake_frameset_header.php");
 <h1>Jarvik Heart PB0205-2 Go-No-Go Calculator</h1>
 
 <?php
+
+$nummeasurements = 6;
+
+
 echo "
 	<form action='".$_SERVER['PHP_SELF']."' method='post'>
 		<table>

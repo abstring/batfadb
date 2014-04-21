@@ -4,12 +4,24 @@ UserCake Version: 2.0.2
 http://usercake.com
 */
 
-//Database Information
-$db_host = "localhost"; //Host address (most likely localhost)
-$db_name = "batfadb"; //Name of Database
-$db_user = "batfadb"; //Name of database user
-$db_pass = "batfadb"; //Password for database user
-$db_table_prefix = "uc_";
+$hostname = gethostname();
+switch ($hostname) {
+	case "trident":
+		//Database Information
+		$db_host = "localhost"; //Host address (most likely localhost)
+		$db_name = "batfadb"; //Name of Database
+		$db_user = "batfadb"; //Name of database user
+		$db_pass = "batfadb"; //Password for database user
+		$db_table_prefix = "uc_";
+		break;
+	default:
+		//Database Information
+		$db_host = "localhost"; //Host address (most likely localhost)
+		$db_name = "batfadb"; //Name of Database
+		$db_user = "batfadb"; //Name of database user
+		$db_pass = "batfadb"; //Password for database user
+		$db_table_prefix = "uc_";
+}
 
 GLOBAL $errors;
 GLOBAL $successes;
