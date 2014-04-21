@@ -115,6 +115,7 @@ echo "
 <input type='submit' value='Login' class='submit' />
 </p>
 </form>
+Don't have an account? <a href='register.php'>Register</a> for one now!
 </div>
 </div>
 <div id='bottom'></div>

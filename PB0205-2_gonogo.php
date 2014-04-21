@@ -9,63 +9,92 @@ require_once("models/usercake_frameset_header.php");
 
 <?php
 
-$nummeasurements = 6;
+//Constants to be determined by Engineering
+$nummeasurements 	= 20;		//How many cells to average
+$v_high_limit 		= 4.0;		//The high limit of any batch
+$v_low_limit 		= 3.4;		//The low limit of any batch
+$v_tolerance_high 	= 0.005;	//Bilateral positive tolerance
+$v_tolerance_low 	= 0.005;	//Bilateral negative tolerance
 
+//Perform calculations
+$error = 0;
+$vsum = 0;
+for($i=1; $i<=$nummeasurements; $i++){
+	//Process inputs
+	if(isset($_POST[$i])){
+		$vsum = $vsum + $_POST[$i];
+	}
+}
+$vavg = $vsum / $nummeasurements;
+$vhigh = sprintf("%.3f",($vavg + $v_tolerance_high));
+$vlow = sprintf("%.3f",($vavg - $v_tolerance_low));
+if($vavg <= $v_low_limit || $vavg >= $v_high_limit){
+	$error = 2;
+}
 
+//Master table that creates two columns for displaying data
+echo "<table>
+		<tr>
+			<td valign='top' width='300'>";
+
+//Sub-table that creates all of the inputs
 echo "
 	<form action='".$_SERVER['PHP_SELF']."' method='post'>
-		<table>
-			<tr><td>1st Cell Voltage</td><td><input type='text' name='v1'";
-			if(isset($_POST['v1'])){
-				echo "value=".$_POST['v1'];
-			}
-			echo "></td></tr>";
+		<table>";
 
-			echo "
-			<tr><td>2nd Cell Voltage</td><td><input type='text' name='v2'";
-			if(isset($_POST['v2'])){
-				echo "value=".$_POST['v2'];
-			}
-			echo "></td></tr>";
 
-			echo "
-			<tr><td>3rd Cell Voltage</td><td><input type='text' name='v3'";
-			if(isset($_POST['v3'])){
-				echo "value=".$_POST['v3'];
-			}
-			echo "></td></tr>";
 
-			echo "
-			<tr><td>4th Cell Voltage</td><td><input type='text' name='v4'";
-			if(isset($_POST['v4'])){
-				echo "value=".$_POST['v4'];
-			}
-			echo "></td></tr>";
+for($i=1; $i<=$nummeasurements; $i++){
 
-			echo "
-			<tr><td>5th Cell Voltage</td><td><input type='text' name='v5'";
-			if(isset($_POST['v5'])){
-				echo "value=".$_POST['v5'];
-			}
-			echo "></td></tr>";
-
-		echo "</table>
-		<input type='submit' value='Calculate'>
-	</form>
-";
-
-if(isset($_POST['v1']) && isset($_POST['v2']) && isset($_POST['v3']) && isset($_POST['v4']) && isset($_POST['v5'])){
-	$v1 = $_POST['v1'];
-	$v2 = $_POST['v2'];
-	$v3 = $_POST['v3'];
-	$v4 = $_POST['v4'];
-	$v5 = $_POST['v5'];
-
-	$vavg = ($v1 + $v2 + $v3 + $v4 + $v5) / 5;
-	$vhigh = sprintf("%.3f",($vavg + 0.01));
-	$vlow = sprintf("%.3f",($vavg - 0.01));
-	echo "Average voltage is ".sprintf("%.3f",($vavg))."<br><br>";
-	echo "<font size=4>Cell voltage must be between <b>".$vlow."</b> and <b>".$vhigh."</b></font>";
+	echo "<tr><td>Cell Voltage ".$i."</td><td><input type='text' name=".$i." ";
+	if(isset($_POST[$i])){
+		if($_POST[$i] > $v_high_limit || $_POST[$i] > ($vavg + $v_tolerance_high)){
+			echo "value='".$_POST[$i]." TOO HIGH' style='color:red;font-weight:bold;'";
+			$error = 1;
+		}
+		elseif($_POST[$i] < $v_low_limit || $_POST[$i] < ($vavg - $v_tolerance_low)){
+			echo "value='".$_POST[$i]." TOO LOW' style='color:red;font-weight:bold;'";
+			$error = 1;
+		}
+		else{
+			echo "value='".$_POST[$i]."'";
+		}
+		
+	}
+	
+	echo "></td></tr>";
 }
+
+echo "</table>
+
+<input type='submit' value='Calculate'>
+</form>
+<form display='inline' action='".$_SERVER['PHP_SELF']."' method='post'>
+<input type='submit' value='Reset Form'>
+</form>
+</td>";
+
+
+//Sub-table that creates results
+echo "<td valign='top'>";
+
+if($error==0){
+	
+	echo "The average voltage for these ".$nummeasurements." cells is ".sprintf("%.3f",$vavg)."<br>
+	The tolerance requested by the customer is +".($v_tolerance_high*1000)."mV/-".($v_tolerance_low*1000)."mV<br>";
+	echo "<font size=4>Each cell voltage must be between <b>".$vlow."</b>V and <b>".$vhigh."</b>V for the rest of the lot.</font><br>";
+}
+elseif($error==1){
+	echo "<b><font size=4 color='red'>Please fix errors and calculate again.</b></font>";
+}
+else{
+	echo "<b>Directions: </b> Build the first ".$nummeasurements." assemblies and measure each of their open circuit voltages (OCV). Enter those measurements in the boxes on the left and press <b>\"Calculate\"</b>.<br><br>
+	This calculator will determine the correct voltage limits that should be used for the rest of the lot.<br>";
+}
+
+//Close tags of master table
+echo "</td>
+	</tr>
+	</table>";
 
 ?>
