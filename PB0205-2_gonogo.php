@@ -5,7 +5,7 @@ require_once("models/header.php");
 require_once("models/usercake_frameset_header.php");
 ?>
 <div align='center'><img src="img/battery.png"></div>
-<h1>Jarvik Heart PB0205-2 Go-No-Go Calculator</h1>
+<h1>Jarvik Heart PB0205-2 Go-No-Go Calculator v1.0</h1>
 
 <?php
 
