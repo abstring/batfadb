@@ -35,7 +35,7 @@ if($vavg <= $v_low_limit || $vavg >= $v_high_limit){
 //Master table that creates two columns for displaying data
 echo "<table>
 		<tr>
-			<td valign='top' width='300'>";
+			<td valign='top' width='250'>";
 
 //Sub-table that creates all of the inputs
 echo "
@@ -46,23 +46,23 @@ echo "
 
 for($i=1; $i<=$nummeasurements; $i++){
 
-	echo "<tr><td>Cell Voltage ".$i."</td><td><input type='text' name=".$i." ";
+	echo "<tr><td>Cell Voltage ".$i."</td><td><input type='text' size=3 name=".$i." ";
 	if(isset($_POST[$i])){
 		if($_POST[$i] > $v_high_limit || $_POST[$i] > ($vavg + $v_tolerance_high)){
-			echo "value='".$_POST[$i]." TOO HIGH' style='color:red;font-weight:bold;'";
+			echo "value='".$_POST[$i]."' style='color:red;font-weight:bold;'></td><td><font color='red'>TOO HIGH</font></td>";
 			$error = 1;
 		}
 		elseif($_POST[$i] < $v_low_limit || $_POST[$i] < ($vavg - $v_tolerance_low)){
-			echo "value='".$_POST[$i]." TOO LOW' style='color:red;font-weight:bold;'";
+			echo "value='".$_POST[$i]."' style='color:red;font-weight:bold;'></td><td><font color='red'>TOO LOW</font></td>";
 			$error = 1;
 		}
 		else{
-			echo "value='".$_POST[$i]."'";
+			echo "value='".$_POST[$i]."'></td><td><font color='green'>OK</font></td>";
 		}
 		
 	}
 	
-	echo "></td></tr>";
+	echo "</tr>";
 }
 
 echo "</table>
@@ -80,7 +80,7 @@ echo "<td valign='top'>";
 
 if($error==0){
 	
-	echo "The average voltage for these ".$nummeasurements." cells is ".sprintf("%.3f",$vavg)."<br>
+	echo "The average voltage for these ".$nummeasurements." cells is ".sprintf("%.3f",$vavg)."V<br>
 	The tolerance requested by the customer is +".($v_tolerance_high*1000)."mV/-".($v_tolerance_low*1000)."mV<br>";
 	echo "<font size=4>Each cell voltage must be between <b>".$vlow."</b>V and <b>".$vhigh."</b>V for the rest of the lot.</font><br>";
 }
