@@ -88,7 +88,10 @@ if($error==0){
 	echo "<p>The average voltage for these ".$nummeasurements." cells is ".sprintf("%.3f",$vavg)."V<br>
 	The tolerance requested by the customer is +".($v_tolerance_high*1000)."mV/-".($v_tolerance_low*1000)."mV</p>";
 	echo "<p><font size=4>Each cell voltage must be between <b>".$vlow."</b>V and <b>".$vhigh."</b>V for the rest of the lot.</font></p>";
-	echo "<p>Printed on ".date('n/j/Y')." by ".$loggedInUser->displayname.".</p>";
+	echo "<p>Printed on ".date('n/j/Y');
+	if(isset($loggedInUser->displayname)) {
+		echo " by ".$loggedInUser->displayname.".</p>";
+	}
 	echo "<br>
 		<script>
 		document.write(\"<input type='button' \" +
