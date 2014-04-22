@@ -4,6 +4,12 @@ if (!securePage($_SERVER['PHP_SELF'])){die();}
 require_once("models/header.php");
 require_once("models/usercake_frameset_header.php");
 ?>
+<style type="text/css" media="print">
+.printbutton {
+  visibility: hidden;
+  display: none;
+}
+</style>
 <div align='center'><img src="img/battery.png"></div>
 <h1>Jarvik Heart PB0205-2 Go-No-Go Calculator v1.0</h1>
 
@@ -79,10 +85,18 @@ echo "</table>
 echo "<td valign='top'>";
 
 if($error==0){
-	
-	echo "The average voltage for these ".$nummeasurements." cells is ".sprintf("%.3f",$vavg)."V<br>
-	The tolerance requested by the customer is +".($v_tolerance_high*1000)."mV/-".($v_tolerance_low*1000)."mV<br>";
-	echo "<font size=4>Each cell voltage must be between <b>".$vlow."</b>V and <b>".$vhigh."</b>V for the rest of the lot.</font><br>";
+	echo "<p>The average voltage for these ".$nummeasurements." cells is ".sprintf("%.3f",$vavg)."V<br>
+	The tolerance requested by the customer is +".($v_tolerance_high*1000)."mV/-".($v_tolerance_low*1000)."mV</p>";
+	echo "<p><font size=4>Each cell voltage must be between <b>".$vlow."</b>V and <b>".$vhigh."</b>V for the rest of the lot.</font></p>";
+	echo "<p>Printed on ".date('n/j/Y')." by ".$loggedInUser->displayname.".</p>";
+	echo "<br>
+		<script>
+		document.write(\"<input type='button' \" +
+		\"onClick='window.print()' \" +
+		\"class='printbutton' \" +
+		\"value='Print This Page'/>\");
+		</script>
+	";
 }
 elseif($error==1){
 	echo "<b><font size=4 color='red'>Please fix errors and calculate again.</b></font>";
