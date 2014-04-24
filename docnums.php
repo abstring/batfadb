@@ -368,17 +368,21 @@ if(isset($_GET['doc'])){
 			<tr valign='top'><td align='right'><b>Last Modification Date:</b></td><td>".$doc['datemodified']."</td></tr>
 			<tr valign='top'><td align='right'><b>Creation Date:</b></td><td>".$doc['datecreated']."</td></tr>
 		</table>
-		<h3><u>Revisions</u></h3>
+		<table><tr><td><h3><u>Revisions</u><a href=''></a></h3></td><td><a href=''><img src='img/plus.png' width='20' height='20'></a></td><td><font color='grey' size=1>New</font></td></tr></table>
+		
+		
 		
 	";
 	if(isset($revisions)){
-		echo "<table>
+		echo "
+			<table>
 			<tr>
 				<th>Rev</th>
 				<th>Comment</th>
 				<th>Author</th>
 				<th>Date</th>
-			</tr>";
+			</tr>
+		";
 		foreach($revisions as $rev){
 			echo "<tr>
 					<td>".$rev['level']."</td>
@@ -387,12 +391,14 @@ if(isset($_GET['doc'])){
 					<td>".$rev['datecreated']."</td>
 				</tr>
 					";
+
 		}
+		echo "</table>";
 	}
 	else{
 		echo "No revisions entered.<br>";
 	}
-	echo "</table>";
+	
 }
 
 // <th width='90'>Number</th>
