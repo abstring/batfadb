@@ -4,6 +4,7 @@ if (!securePage($_SERVER['PHP_SELF'])){die();}
 require_once("models/header.php");
 require_once("models/usercake_frameset_header.php");
 ?>
+
 <div align='center'><img src="img/docicon.png"></div>
 <h1>Document Number Index</h1>
 
@@ -368,21 +369,34 @@ if(isset($_GET['doc'])){
 			<tr valign='top'><td align='right'><b>Last Modification Date:</b></td><td>".$doc['datemodified']."</td></tr>
 			<tr valign='top'><td align='right'><b>Creation Date:</b></td><td>".$doc['datecreated']."</td></tr>
 		</table>
-		<table><tr><td><h3><u>Revisions</u><a href=''></a></h3></td><td><a href=''><img src='img/plus.png' width='20' height='20'></a></td><td><font color='grey' size=1>New</font></td></tr></table>
-		
-		
+		<table>
+			<tr>
+				<td><h3><u>Revisions</u></h3></td>
+				<td><a href='".$_SERVER['PHP_SELF']."?doc=".$doc['number']."&newrev=1'><img src='img/plus.png' width='20' height='20'></a></td><td><font color='grey' size=1>New</font></td></tr></table>
 		
 	";
+	
+
+
 	if(isset($revisions)){
 		echo "
 			<table>
 			<tr>
-				<th>Rev</th>
+				<th width=35>Rev</th>
 				<th>Comment</th>
 				<th>Author</th>
 				<th>Date</th>
 			</tr>
 		";
+		if(isset($_GET['newrev'])){
+			echo "<tr><form action=".$_SERVER['PHP_SELF']." method='post' display='inline' id='newrevform'>
+					<td><input type='text' name='newlevel'></td>
+					<td>".$rev['comment']."</td>
+					<td>".$rev['author']."</td>
+					<td>".$rev['datecreated']."</td>
+				</tr>
+					";
+		}
 		foreach($revisions as $rev){
 			echo "<tr>
 					<td>".$rev['level']."</td>
